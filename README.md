@@ -47,7 +47,7 @@ Before you begin, ensure you have met the following requirements:
 
 5. Seed the database (optional):
    ```bash
-   npm run seed
+   npx prisma db seed
    ```
 
 ## Development

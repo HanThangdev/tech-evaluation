@@ -112,12 +112,13 @@ export default function TransactionListClient({
       ) : (
         <div className="overflow-x-auto">
           {transactions.length > 0 ? (
-          <table className="min-w-[700px] w-full bg-white border border-gray-300">
+          <table className="min-w-[750px] w-full bg-white border border-gray-300">
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2 text-left">Type</th>
                 <th className="px-4 py-2 text-left">Token</th>
                 <th className="px-4 py-2 text-left">Amount</th>
+                <th className="px-4 py-2 text-left">Date</th>
                 <th className="px-4 py-2 text-left">Status</th>
                 <th className="px-4 py-2 text-left">Description</th>
                 <th className="px-4 py-2 text-center">Action</th>
@@ -132,6 +133,7 @@ export default function TransactionListClient({
                   <td className="px-4 py-2 uppercase">{transaction.type}</td>
                   <td className="px-4 py-2">{transaction.token}</td>
                   <td className="px-4 py-2">{transaction.amount}</td>
+                  <td className="px-4 py-2">{new Date(transaction.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</td>
                   <td className="px-4 py-2">
                     <span className={`px-2 py-1 rounded-full text-sm ${
                       transaction.status === 'Completed' ? 'bg-green-100 text-green-800' :

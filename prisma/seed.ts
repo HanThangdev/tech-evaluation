@@ -48,7 +48,6 @@ const transactionData = [
 
 const userData = [
   {
-    id: '1',
     name: 'John Doe',
     email: 'john@doe.com',
     password: 'password',
@@ -56,7 +55,6 @@ const userData = [
     balance: 1000,
   },
   {
-    id: '2',
     name: 'Jane Smith',
     email: 'jane@smith.com',
     password: 'password',
@@ -79,10 +77,16 @@ export async function main() {
     const createdUsers = await Promise.all(userPromises);
     console.log(`Created ${createdUsers.length} users`);
 
+    // Map transactions to use actual user IDs
+    const transactionsWithUserIds = transactionData.map((transaction, index) => ({
+      ...transaction,
+      userId: createdUsers[index % 2].id // Alternate between the two users
+    }));
+
     // Create transactions in batches of 100
     const batchSize = 100;
-    for (let i = 0; i < transactionData.length; i += batchSize) {
-      const batch = transactionData.slice(i, i + batchSize);
+    for (let i = 0; i < transactionsWithUserIds.length; i += batchSize) {
+      const batch = transactionsWithUserIds.slice(i, i + batchSize);
       const transactionPromises = batch.map(transaction =>
         prisma.transactions.create({
           data: transaction

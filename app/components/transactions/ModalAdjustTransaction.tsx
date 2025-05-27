@@ -64,7 +64,7 @@ export default function ModalAdjustTransaction({ transaction, onSubmit, onClose,
         <label className="block mb-2">Type</label>
         <select
           name="type"
-          value={formData.type}
+          value={formData?.type}
           onChange={handleChange}
           className="w-full p-2 border rounded"
         >
@@ -79,7 +79,7 @@ export default function ModalAdjustTransaction({ transaction, onSubmit, onClose,
         <input
           type="text"
           name="token"
-          value={formData.token}
+          value={formData?.token || ''}
           onChange={handleChange}
           className="w-full p-2 border rounded"
           required
@@ -91,7 +91,7 @@ export default function ModalAdjustTransaction({ transaction, onSubmit, onClose,
         <input
           type="number"
           name="amount"
-          value={formData.amount}
+          value={formData?.amount || 0}
           onChange={handleChange}
           className="w-full p-2 border rounded"
           required
@@ -102,7 +102,7 @@ export default function ModalAdjustTransaction({ transaction, onSubmit, onClose,
         <label className="block mb-2">Status</label>
         <select
           name="status"
-          value={formData.status}
+          value={formData?.status || 'pending'}
           onChange={handleChange}
           className="w-full p-2 border rounded"
         >
@@ -117,7 +117,7 @@ export default function ModalAdjustTransaction({ transaction, onSubmit, onClose,
         <input
           type="text"
           name="description"
-          value={formData.description}
+          value={formData?.description || ''}
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
