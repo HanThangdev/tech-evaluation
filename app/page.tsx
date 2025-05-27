@@ -1,6 +1,6 @@
 "use client"
 import { motion } from "framer-motion"
-import TransactionList from "./components/TransactionList"
+import TransactionList from "./components/transactions/TransactionList"
 
 const features = [
  {
@@ -36,12 +36,10 @@ const features = [
  },
 ]
 
-const HomePage = () => {
+export default function HomePage() {
  return (
   <div className="max-w-6xl mx-auto p-6">
    <TransactionList />
   </div>
  )
 }
-
-export default HomePage

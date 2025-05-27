@@ -1,10 +1,10 @@
 // Transaction service for handling CRUD operations
-import { ApiResponse } from '@/services/types';
+import { ApiResponse, Transaction } from '@/services/types';
 import { transactionApi } from './apiService';
 
 // Get all transactions
-export const getAllTransactions = async (): Promise<ApiResponse<any[]>> => {
-  return await transactionApi.getAll();
+export const getAllTransactions = async (params: { page: number, limit: number, type: string }): Promise<ApiResponse<{data: Transaction[], meta: {total: number, totalPages: number, page: number, limit: number}}>> => {
+  return await transactionApi.getAll(params);
 };
 
 // Get transaction by ID

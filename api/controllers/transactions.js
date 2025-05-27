@@ -6,6 +6,7 @@ import {
     validationErrorResponse 
 } from '../utils/responseHandler.js';
 import { ERROR_MESSAGE, SUCCESS_MESSAGE } from '../constant/message.js';
+import { TRANSACTION_TYPE } from '../constant/transaction.js';
 import STATUS_CODE from '../constant/status.js';
 
 const prisma = new PrismaClient();
@@ -24,27 +25,42 @@ const prisma = new PrismaClient();
  * Error Response:
  * - 400 Bad Request: Returned if an invalid type value is provided.
  */
-export const index = async (req, res) => {
+export const index = async (req, res, next) => {
     try {
-        const { type } = req.query;
+        const { type, page = 1, limit = 10 } = req.query;
+        const skip = (parseInt(page) - 1) * parseInt(limit);
         
         if (type && !Object.values(TRANSACTION_TYPE).includes(type)) {
             return validationErrorResponse(res, { type: ERROR_MESSAGE.INVALID_TRANSACTION_TYPE });
         }
 
-        const where = type ? { type } : {};
+        const where = !type || type === 'all' ? {} : { type };
 
-        const transactions = await prisma.transactions.findMany({
-            where,
-            orderBy: {
-                createdAt: 'desc'
+        const [transactions, total] = await Promise.all([
+            prisma.transactions.findMany({
+                where,
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                skip,
+                take: parseInt(limit)
+            }),
+            prisma.transactions.count({ where })
+        ]);
+
+        const totalPages = Math.ceil(total / parseInt(limit));
+
+        return successResponse(res, STATUS_CODE.SUCCESS, {
+            data: transactions,
+            meta: {
+                total,
+                page: parseInt(page),
+                limit: parseInt(limit), 
+                totalPages
             }
         });
-
-        return successResponse(res, STATUS_CODE.SUCCESS, transactions);
     } catch (error) {
-        console.error('Error fetching transactions:', error);
-        return errorResponse(res);
+        next(error);
     }
 }
 
@@ -62,7 +78,7 @@ export const index = async (req, res) => {
  * Error Response:
  * - 404 Not Found: Returned if no transaction exists with the given ID.
  */
-export const fetchById = async (req, res) => {
+export const fetchById = async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -76,8 +92,7 @@ export const fetchById = async (req, res) => {
 
         return successResponse(res, STATUS_CODE.SUCCESS, transaction, SUCCESS_MESSAGE.SUCCESS);
     } catch (error) {
-        console.error('Error fetching transaction:', error);
-        return errorResponse(res);
+        next(error);
     }
 }
 
@@ -97,40 +112,39 @@ export const fetchById = async (req, res) => {
  * Error Response:
  * - 400 Bad Request: Returned if validation fails (e.g., invalid type, empty token, or non-positive amount).
  */
-export const create = async (req, res) => {
+export const create = async (req, res, next) => {
     try {
-        const { transactionType, token, amount } = req.body;
-
-        if (!transactionType || !token || !amount) {
-            return validationErrorResponse(res, { 
-                fields: ERROR_MESSAGE.MISSING_REQUIRED_FIELDS 
-            });
+        const { type, token, amount, status, description, userId } = req.body;
+        
+        // Combine all validations into one check
+        const validationErrors = {};
+        if (!type) validationErrors.type = ERROR_MESSAGE.MISSING_REQUIRED_FIELDS;
+        if (!token) validationErrors.token = ERROR_MESSAGE.MISSING_REQUIRED_FIELDS;
+        if (!amount) validationErrors.amount = ERROR_MESSAGE.MISSING_REQUIRED_FIELDS;
+        if (amount <= 0) validationErrors.amount = ERROR_MESSAGE.INVALID_TRANSACTION_AMOUNT;
+        if (type && !Object.values(TRANSACTION_TYPE).includes(type)) {
+            validationErrors.type = ERROR_MESSAGE.INVALID_TRANSACTION_TYPE;
         }
 
-        if (!Object.values(TRANSACTION_TYPE).includes(transactionType)) {
-            return validationErrorResponse(res, { 
-                transactionType: ERROR_MESSAGE.INVALID_TRANSACTION_TYPE 
-            });
+        if (Object.keys(validationErrors).length > 0) {
+            return validationErrorResponse(res, validationErrors);
         }
 
-        if (amount <= 0) {
-            return validationErrorResponse(res, { 
-                amount: ERROR_MESSAGE.INVALID_TRANSACTION_AMOUNT 
-            });
-        }
-
+        // Direct create without transaction
         const transaction = await prisma.transactions.create({
             data: {
-                type: transactionType,
+                type,
                 token,
-                amount
+                amount,
+                status: status || 'Pending', // Set default status
+                description,
+                userId
             }
         });
 
         return successResponse(res, STATUS_CODE.CREATED, transaction, SUCCESS_MESSAGE.TRANSACTION_CREATED_SUCCESSFULLY);
     } catch (error) {
-        console.error('Error creating transaction:', error);
-        return errorResponse(res);
+        next(error);
     }
 }
 
@@ -154,7 +168,7 @@ export const create = async (req, res) => {
  * - 404 Not Found: Returned if no transaction exists with the given ID.
  * - 400 Bad Request: Returned if validation fails.
  */
-export const update = async (req, res) => {
+export const update = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { transactionType, token, amount } = req.body;
@@ -183,15 +197,13 @@ export const update = async (req, res) => {
             where: { id },
             data: {
                 type: transactionType,
-                token,
-                amount
+                ...req.body
             }
         });
 
         return successResponse(res, STATUS_CODE.SUCCESS, updatedTransaction, SUCCESS_MESSAGE.TRANSACTION_UPDATED_SUCCESSFULLY);
     } catch (error) {
-        console.error('Error updating transaction:', error);
-        return errorResponse(res);
+        next(error);
     }
 }
 
@@ -209,7 +221,7 @@ export const update = async (req, res) => {
  * Error Response:
  * - 404 Not Found: Returned if no transaction exists with the given ID.
  */
-export const remove = async (req, res) => {
+export const remove = async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -227,31 +239,6 @@ export const remove = async (req, res) => {
 
         return successResponse(res, STATUS_CODE.SUCCESS, deletedTransaction, SUCCESS_MESSAGE.TRANSACTION_DELETED_SUCCESSFULLY);
     } catch (error) {
-        console.error('Error deleting transaction:', error);
-        return errorResponse(res);
-    }
-}
-
-
-export const filter = async (req, res) => {
-    try {
-        const { type } = req.query;
-
-        if (!Object.values(TRANSACTION_TYPE).includes(transactionType) || !transactionType) {
-            return validationErrorResponse(res, { transactionType: ERROR_MESSAGE.INVALID_TRANSACTION_TYPE });
-        }
-
-        const transactions = await prisma.transactions.findMany({
-            where: { type: transactionType }
-        });
-
-        if (!transactions) {
-            return notFoundResponse(res, ERROR_MESSAGE.TRANSACTION_NOT_FOUND);
-        }
-
-        return successResponse(res, STATUS_CODE.SUCCESS, transactions);
-    } catch (error) {
-        console.error('Error filtering transactions:', error);
-        return errorResponse(res);
+        next(error);
     }
 }

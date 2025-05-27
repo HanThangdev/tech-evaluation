@@ -1,22 +1,26 @@
 import { Router } from "express";
-
 import { transactions } from "../controllers/index.js";
+import { 
+  transactionValidationRules, 
+  transactionIdValidationRules, 
+  transactionQueryValidationRules 
+} from '../middleware/transactionValidator.js';
 
 const router = Router();
 
 // Get all transactions with pagination and filters
-router.get('/', transactions.index)
+router.get('/', transactionQueryValidationRules(), transactions.index)
 
 // Get transaction by ID
-router.get('/:id', transactions.fetchById)
+router.get('/:id', transactionIdValidationRules(), transactions.fetchById)
 
 // Create new transaction
-router.post('/', transactions.create)
+router.post('/', transactionValidationRules(), transactions.create)
 
 // Update transaction
-router.put('/:id', transactions.update)
+router.put('/:id', [...transactionIdValidationRules(), ...transactionValidationRules()], transactions.update)
 
 // Delete transaction
-router.delete('/:id', transactions.remove)
+router.delete('/:id', transactionIdValidationRules(), transactions.remove)
 
 export default router;

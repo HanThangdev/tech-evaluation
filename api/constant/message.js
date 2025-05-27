@@ -6,6 +6,9 @@ export const ERROR_MESSAGE = {
     UNAUTHORIZED: 'Unauthorized',
     FORBIDDEN: 'Forbidden',
     VALIDATION_FAILED: 'Validation failed',
+    ADMIN_ONLY: 'Admin only',
+    USER_NOT_FOUND: 'User not found',
+    
 
     //transaction
     INVALID_TRANSACTION_TYPE: 'Invalid transaction type',
@@ -28,5 +31,12 @@ export const SUCCESS_MESSAGE = {
     TRANSACTION_CREATED_SUCCESSFULLY: 'Transaction created successfully',
     TRANSACTION_UPDATED_SUCCESSFULLY: 'Transaction updated successfully',
     TRANSACTION_DELETED_SUCCESSFULLY: 'Transaction deleted successfully',
+
+    //user
+    USER_CREATED_SUCCESSFULLY: 'User created successfully',
+    USER_UPDATED_SUCCESSFULLY: 'User updated successfully',
+    USER_DELETED_SUCCESSFULLY: 'User deleted successfully',
+
+    //common
     SUCCESS: 'Success',
 }

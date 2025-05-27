@@ -13,17 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model transactions {
-  id          String   @id @default(uuid())
-  type        String   @db.Text // Stake, Borrow, or Lend 
-  token       String
-  amount      Float
-  status      String   @db.Text // Pending, Completed, Failed
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId      String   @db.Text
-  description String   @db.Text // Description of the transaction
-  user        users    @relation(fields: [userId], references: [id])
+  id             String           @id @default(uuid())
+  type           String
+  token          String
+  amount         Float
+  status         String 
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  userId         String           @db.Text
+  description    String           @db.Text
+  user           users            @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status]) // Index cho việc query các pending transactions
 }
 
 model users {

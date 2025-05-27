@@ -1,13 +1,14 @@
 export const TRANSACTION_TYPE = {
-    STAKE: 'Stake',
-    BORROW: 'Borrow',
-    LEND: 'Lend',
+    STAKE: 'stake',
+    BORROW: 'borrow',
+    LEND: 'lend',
+    ALL: 'all',
 }
 
 export const TRANSACTION_STATUS = {
-    PENDING: 'Pending',
-    COMPLETED: 'Completed',
-    FAILED: 'Failed',
+    PENDING: 'pending',
+    COMPLETED: 'completed',
+    FAILED: 'failed',
 }
 
 export const TRANSACTION_TOKEN = {

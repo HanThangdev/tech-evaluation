@@ -4,9 +4,8 @@
  * A utility file to standardize API responses across the application
  */
 
-import { SUCCESS_MESSAGE } from "../constant/message.js";
+import { SUCCESS_MESSAGE, ERROR_MESSAGE } from "../constant/message.js";
 import STATUS_CODE from "../constant/status.js";
-
 /**
  * Success Response Handler
  * @param {Object} res - Express response object
@@ -34,7 +33,6 @@ export const errorResponse = (res, statusCode = STATUS_CODE.INTERNAL_SERVER_ERRO
         success: false,
         message
     };
-
     if (errors) {
         response.errors = errors;
     }

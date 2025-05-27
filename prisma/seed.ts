@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 // Sample transaction data
 const transactionData = [
   {
-    type: 'Stake',
+    type: 'stake',
     token: 'ETH',
     amount: 1.5,
     status: 'Pending',
@@ -13,7 +13,7 @@ const transactionData = [
     userId: '1',
   },
   {
-    type: 'Borrow',
+    type: 'borrow',
     token: 'USDT',
     amount: 1000,
     status: 'Pending',
@@ -21,7 +21,7 @@ const transactionData = [
     userId: '2',
   },
   {
-    type: 'Lend',
+    type: 'lend',
     token: 'BTC',
     amount: 0.1,
     status: 'Pending',
@@ -29,7 +29,7 @@ const transactionData = [
     userId: '1',
   },
   {
-    type: 'Stake',
+    type: 'stake',
     token: 'SOL',
     amount: 50,
     status: 'Pending',
@@ -37,7 +37,7 @@ const transactionData = [
     userId: '2',
   },
   {
-    type: 'Borrow',
+    type: 'borrow',
     token: 'ETH',
     amount: 2.0,
     status: 'Pending',

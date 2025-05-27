@@ -1,9 +1,13 @@
 import axios from 'axios';
 import { ApiResponse, Transaction } from '@/services/types';
+import dotenv from 'dotenv';
+
+// Initialize dotenv
+dotenv.config();
 
 // Base API configuration with axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:5800/api' || '',
+  baseURL: process.env.API_URL || 'http://localhost:5800/api',
   headers: {
     'Content-Type': 'application/json',
   }
@@ -15,14 +19,13 @@ const handleApiResponse = async <T>(promise: Promise<any>): Promise<ApiResponse<
     const response = await promise;
     return {
       success: true,
-      data: response.data as T,
-      statusCode: response.status
+      data: response?.data?.data as T,
+      meta: response?.data?.meta,
     };
   } catch (error: any) {
     return {
       success: false,
       error: error.response?.data?.message || 'An error occurred', // Error occurred
-      statusCode: error.response?.status || 500
     };
   }
 };
@@ -30,7 +33,7 @@ const handleApiResponse = async <T>(promise: Promise<any>): Promise<ApiResponse<
 // Transaction API endpoints with unified error handling
 export const transactionApi = {
   // Get all transactions
-  getAll: () => handleApiResponse<Transaction[]>(api.get('/transactions')),
+  getAll: (params: { page: number, limit: number }) => handleApiResponse<{data: Transaction[], meta: {total: number, totalPages: number, page: number, limit: number}}>(api.get('/transactions', { params })),
 
   // Get transaction by ID 
   getById: (id: string) => handleApiResponse<Transaction>(api.get(`/transactions/${id}`)),
