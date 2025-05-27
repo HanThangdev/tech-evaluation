@@ -3,14 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"node api/server.js\" \"next dev\"",
-    "build": "next build",
-    "lint": "next lint"
+    "dev:frontend": "next dev --turbopack --port 3000",
+    "dev:backend": "nodemon api/server.js",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "build": "npx prisma db push && npx prisma generate && next build",
+    "start": "next start --port 3001 && concurrently \"nodemon api/server.js\"",
+    "lint": "next lint",
+    "seed": "npx prisma generate && tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.7.4",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "6.3.0",
+    "@prisma/extension-accelerate": "^1.2.1",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
@@ -21,7 +27,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^16.4.5",
-    "ethers": "^5.7.2",
+    "ethers": "^6.14.1",
     "express": "^4.18.2",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^6.7.0",
@@ -36,30 +42,35 @@
     "morgan": "^1.10.0",
     "motion": "^11.12.0",
     "ndb": "^1.1.5",
-    "next": "15.0.3",
+    "next": "^15.3.2",
     "next-intl": "^3.25.1",
     "nodemailer": "^6.9.1",
-    "nodemon": "^2.0.22",
     "normalize-url": "^8.0.1",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "slugify": "^1.6.6",
     "validator": "^13.9.0",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "22.10.7",
+    "@types/react": "19.0.7",
+    "@types/react-dom": "19.0.3",
     "bitcoin-core": "^4.2.0",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "eslint-plugin-next": "^0.0.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
+    "nodemon": "^3.1.10",
     "postcss": "^8",
+    "prisma": "^6.8.2",
     "room-populate": "^1.0.17",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "tsx": "4.19.2",
+    "typescript": "5.7.3"
   },
-  "type": "module"
+  "type": "module",
+  "prisma": {
+    "seed": "npx prisma generate && tsx prisma/seed.ts"
+  }
 }

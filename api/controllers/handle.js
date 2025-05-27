@@ -1,6 +1,6 @@
-import { Contract, Wallet, providers, ethers } from "ethers"
+import { Contract, Wallet, JsonRpcProvider, ethers } from "ethers"
 import { erc20ABI } from "../config/constant.js"
-import { isAddress, keccak256 } from "ethers/lib/utils.js"
+import { isAddress, keccak256 } from "ethers"
 
 import { callEthContract, callPolygonContract, callBscContract, callArbitrumContract, callAvalancheContract, callFantomContract, callHarmonyContract, callHecoContract, callKlayContract, callMaticContract, callMoonbeamContract, callHashedContract, callOptimismContract, callPalmContract, callRoninContract, callXDaiContract } from '../config/getContract.js'
 
@@ -150,7 +150,7 @@ export const verify = async (request, res) => {
   const Address = process.env.CONTRACT_ADDRESS
   const chainId = process.env.CHAIN_ID
 
-  const provider = new providers.JsonRpcProvider(process.env.RPC_PROVIDER_URL)
+  const provider = new JsonRpcProvider(process.env.RPC_PROVIDER_URL)
 
   const signer = new Wallet(process.env.WALLET_PRIVATE_KEY, provider)
 
@@ -184,7 +184,7 @@ export const batchVerify = async (request, res) => {
   const Address = process.env.CONTRACT_ADDRESS
   const chainId = process.env.CHAIN_ID
 
-  const provider = new providers.JsonRpcProvider(process.env.RPC_PROVIDER_URL)
+  const provider = new JsonRpcProvider(process.env.RPC_PROVIDER_URL)
 
   if (!userData) {
    return res.status(400).json({ message: "No data found" })
@@ -224,7 +224,7 @@ export const check = async (req, res) => {
 
   const Address = process.env.CONTRACT_ADDRESS
 
-  const provider = new providers.JsonRpcProvider(process.env.RPC_PROVIDER_URL)
+  const provider = new JsonRpcProvider(process.env.RPC_PROVIDER_URL)
 
   const signer = new Wallet(process.env.WALLET_PRIVATE_KEY, provider)
 
@@ -254,7 +254,7 @@ export const approvePendingVerification = async (req, res) => {
   const Address = process.env.CONTRACT_ADDRESS
   const chainId = process.env.CHAIN_ID
 
-  const provider = new providers.JsonRpcProvider(process.env.RPC_PROVIDER_URL)
+  const provider = new JsonRpcProvider(process.env.RPC_PROVIDER_URL)
 
   const signer = new Wallet(process.env.WALLET_PRIVATE_KEY, provider)
   const contract = new Contract(Address, erc20ABI, signer)
@@ -305,7 +305,7 @@ export const getPendingVerificationCount = async (req, res) => {
 
   const Address = process.env.CONTRACT_ADDRESS
 
-  const provider = new providers.JsonRpcProvider(process.env.RPC_PROVIDER_URL)
+  const provider = new JsonRpcProvider(process.env.RPC_PROVIDER_URL)
 
   const signer = new Wallet(process.env.WALLET_PRIVATE_KEY, provider)
   const contract = new Contract(Address, erc20ABI, signer)

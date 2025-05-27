@@ -20,6 +20,9 @@ export const metadata: Metadata = {
  title: "Defi forge",
  description:
   "Defi forge is a platform that allows you to create your own DeFi project in minutes.",
+ icons: {
+  icon: '/favicon.ico',
+ },
 }
 
 export default async function RootLayout({
