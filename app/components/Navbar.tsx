@@ -19,6 +19,7 @@ import { DynamicSwitchLanguage } from "./DynamicSwitchLanguage"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
 
 function classNames(...classes: (string | undefined | null | false)[]): string {
  return classes.filter(Boolean).join(" ")
@@ -54,7 +55,7 @@ export default function Navbar() {
      </div>
      <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
       <div className="flex shrink-0 items-center">
-       <img alt="Your Company" src="/favicon.svg" className="h-8 w-auto" />
+       <Image alt="Your Company" src="/favicon.svg" width={32} height={32} className="h-8 w-auto" />
       </div>
       <div className="hidden sm:ml-6 sm:block">
        <div className="flex space-x-4">

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, createContext, useContext } from "react"
-import { ethers, Contract } from "ethers"
+import { ethers } from "ethers"
 import STAKING_ABI from "../../public/abi/Staking.json"
 import TOKEN_ABI from "../../public/abi/IERC20Mock.json"
 import { WalletContext } from "./WalletContext"
@@ -30,7 +30,7 @@ interface StakingProviderProps {
 const getEthereumContract = async (
  contractAddress: string,
  contractABI: any
-): Promise<Contract> => {
+): Promise<ethers.Contract> => {
  if (!window.ethereum) {
   throw new Error("Ethereum provider not found")
  }
@@ -49,14 +49,14 @@ export const StakingProvider: React.FC<StakingProviderProps> = ({
  const [loading, setLoading] = useState<boolean>(false) // Loading state
 
  // Utility function to fetch Staking Contract instance
- const getStakingContract = async (): Promise<Contract> => {
+ const getStakingContract = async (): Promise<ethers.Contract> => {
   const stakingAddress = process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS!
 
   return getEthereumContract(stakingAddress, STAKING_ABI.abi)
  }
 
  // Utility function to fetch ERC20 Token Contract instance
- const getTokenContract = async (): Promise<Contract> => {
+ const getTokenContract = async (): Promise<ethers.Contract> => {
   const tokenAddress = process.env.NEXT_PUBLIC_STAKING_TOKEN_ADDRESS!
 
   return getEthereumContract(tokenAddress, TOKEN_ABI.abi)
