@@ -28,13 +28,13 @@ export const getAllUsers = async (req, res, next) => {
         } : {};
 
         const [users, total] = await Promise.all([
-            prisma.User.findMany({
+            prisma.users.findMany({
                 where,
                 skip,
                 take: Number(limit),
                 orderBy: { createdAt: 'desc' }
             }),
-            prisma.User.count({ where })
+            prisma.users.count({ where })
         ]);
 
         return successResponse(res, STATUS_CODE.SUCCESS, {
@@ -60,7 +60,7 @@ export const getUserById = async (req, res, next) => {
     try {
         const { id } = req.params;
         
-        const user = await prisma.user.findUnique({ 
+        const user = await prisma.users.findUnique({ 
             where: { id }
         });
 
@@ -91,7 +91,7 @@ export const createUser = async (req, res, next) => {
         }
 
         // Check if email already exists
-        const existingUser = await prisma.user.findUnique({
+        const existingUser = await prisma.users.findUnique({
             where: { email }
         });
 
@@ -101,7 +101,7 @@ export const createUser = async (req, res, next) => {
             });
         }
 
-        const user = await prisma.user.create({
+        const user = await prisma.users.create({
             data: { 
                 name, 
                 email, 
@@ -125,7 +125,7 @@ export const updateUser = async (req, res, next) => {
         const { id } = req.params;
         const { name, email } = req.body;
 
-        const existingUser = await prisma.user.findUnique({
+        const existingUser = await prisma.users.findUnique({
             where: { id }
         });
 
@@ -133,7 +133,7 @@ export const updateUser = async (req, res, next) => {
             return notFoundResponse(res, ERROR_MESSAGE.USER_NOT_FOUND);
         }
 
-        const user = await prisma.user.update({
+        const user = await prisma.users.update({
             where: { id },
             data: { name, email }
         });
@@ -153,7 +153,7 @@ export const deleteUser = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const existingUser = await prisma.user.findUnique({
+        const existingUser = await prisma.users.findUnique({
             where: { id }
         });
 
@@ -165,7 +165,7 @@ export const deleteUser = async (req, res, next) => {
             return errorResponse(res, STATUS_CODE.FORBIDDEN, ERROR_MESSAGE.ADMIN_ONLY);
         }
 
-        await prisma.user.delete({
+        await prisma.users.delete({
             where: { id }
         });
 
